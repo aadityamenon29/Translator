@@ -12,9 +12,20 @@ import javax.swing.Box;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Translator {
-
+	
+	JTextArea textAreaUser1;
+	JTextArea textAreaUser2;
+	JButton btnSend1;
+	JButton btnSend2;
+	JTextArea MainScreen;
+	JComboBox comboBox1;
+	JComboBox comboBox2;
 	private JFrame frame;
 
 	/**
@@ -49,41 +60,62 @@ public class Translator {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 20));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
-		comboBox.setBounds(277, 419, 152, 54);
-		frame.getContentPane().add(comboBox);
+		comboBox1 = new JComboBox();
+		comboBox1.setFont(new Font("Yu Gothic", Font.PLAIN, 20));
+		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
+		comboBox1.setBounds(277, 419, 152, 54);
+		frame.getContentPane().add(comboBox1);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
-		comboBox_1.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
-		comboBox_1.setBounds(788, 417, 152, 54);
-		frame.getContentPane().add(comboBox_1);
+		comboBox2 = new JComboBox();
+		comboBox2.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
+		comboBox2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		comboBox2.setBounds(788, 417, 152, 54);
+		frame.getContentPane().add(comboBox2);
 		
 		Component verticalStrut = Box.createVerticalStrut(20);
 		verticalStrut.setBounds(548, 419, 108, 247);
 		frame.getContentPane().add(verticalStrut);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(156, 514, 380, 97);
-		frame.getContentPane().add(textArea);
+		textAreaUser1 = new JTextArea();
+		textAreaUser1.setBounds(156, 514, 380, 97);
+		frame.getContentPane().add(textAreaUser1);
 		
-		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setBounds(663, 514, 380, 97);
-		frame.getContentPane().add(textArea_1);
+		textAreaUser2 = new JTextArea();
+		textAreaUser2.setBounds(663, 514, 380, 97);
+		frame.getContentPane().add(textAreaUser2);
 		
-		JButton btnSend = new JButton("Send");
-		btnSend.setBounds(304, 624, 97, 25);
-		frame.getContentPane().add(btnSend);
+		btnSend1 = new JButton("Send");
 		
-		JButton btnSend_1 = new JButton("Send");
-		btnSend_1.setBounds(829, 624, 97, 25);
-		frame.getContentPane().add(btnSend_1);
+		btnSend1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String user_text = textAreaUser1.getText();
+				String old_screen_text = MainScreen.getText();
+				if(old_screen_text != null){
+					MainScreen.setText(old_screen_text+"\n"+user_text);
+				}
+				else{
+					MainScreen.setText(user_text);
+				}
+				textAreaUser1.setText("");
+			}
+		});
+		btnSend1.setBounds(304, 624, 97, 25);
+		frame.getContentPane().add(btnSend1);
 		
-		JTextArea textArea_2 = new JTextArea();
-		textArea_2.setEditable(false);
-		textArea_2.setBounds(152, 63, 891, 327);
-		frame.getContentPane().add(textArea_2);
+		btnSend2 = new JButton("Send");
+		btnSend2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//System.out.println("test");
+				//textAreaUser2.setText("hiii");
+				
+			}
+		});
+		btnSend2.setBounds(829, 624, 97, 25);
+		frame.getContentPane().add(btnSend2);
+		
+		MainScreen = new JTextArea();
+		MainScreen.setEditable(false);
+		MainScreen.setBounds(152, 63, 891, 327);
+		frame.getContentPane().add(MainScreen);
 	}
 }
