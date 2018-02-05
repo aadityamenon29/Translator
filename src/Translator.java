@@ -1,5 +1,12 @@
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import javax.net.ssl.HttpsURLConnection;
+import javax.xml.parsers.*;
+import org.xml.sax.InputSource;
+import org.w3c.dom.*;
 import java.awt.EventQueue;
-
+import java.util.HashMap;
 import javax.swing.JFrame;
 import java.awt.List;
 import javax.swing.JList;
@@ -33,6 +40,14 @@ public class Translator {
 	private JScrollPane scrollPane;
 	private JScrollPane scrollPane_1;
 	private JScrollPane scrollPane_2;
+	
+	
+	static String subscriptionKey = "c3a369181f4b42a5abda2aaa5294e512";
+
+    static String host = "https://api.microsofttranslator.com";
+    static String path = "/V2/Http.svc/Translate";
+
+	static HashMap<String, String> hm;
 
 	/**
 	 * Launch the application.
@@ -41,6 +56,9 @@ public class Translator {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					hm = new HashMap<String, String>();
+					hm.put("English", "en-us");
+					hm.put("French", "fr-fr");
 					Translator window = new Translator();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -104,12 +122,22 @@ public class Translator {
 		btnSend1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String user_text = textAreaUser1.getText();
+				String source_language = comboBox1.getSelectedItem().toString();
+				String target_language = comboBox2.getSelectedItem().toString();
+				String translated_text = "Error";
+				try {
+					translated_text = Translate(user_text, hm.get(target_language), hm.get(source_language));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				String old_screen_text = MainScreen.getText();
+				// TODO : Add original text next to the translated text as well.
 				if(old_screen_text != null){
-					MainScreen.setText(old_screen_text+"\n"+"User 1: "+user_text);
+					MainScreen.setText(old_screen_text+"\n"+"User 1: "+translated_text);
 				}
 				else{
-					MainScreen.setText("User 1"+user_text);
+					MainScreen.setText("User 1"+translated_text);
 				}
 				textAreaUser1.setText("");
 			}
@@ -121,13 +149,25 @@ public class Translator {
 		btnSend2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String user_text = textAreaUser2.getText();
+				String source_language = comboBox2.getSelectedItem().toString();
+				String target_language = comboBox1.getSelectedItem().toString();
+				System.out.println("source :"+source_language+" "+hm.get(source_language));
+				System.out.println("target: "+target_language+" "+hm.get(target_language));
+				String translated_text = "Error";
+				try {
+					translated_text = Translate(user_text, hm.get(target_language), hm.get(source_language));
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				String old_screen_text = MainScreen.getText();
+				// TODO : Add original text next to the translated text as well.
 				if(old_screen_text != null){
-					MainScreen.setText(old_screen_text+"\n"+"User 2: "+user_text);
+					MainScreen.setText(old_screen_text+"\n"+"User 2: "+translated_text);
 					
 				}
 				else{
-					MainScreen.setText("User 2"+user_text);
+					MainScreen.setText("User 2"+translated_text);
 				}
 				textAreaUser2.setText("");
 				
@@ -145,5 +185,35 @@ public class Translator {
 		scrollPane.setViewportView(MainScreen);
 		MainScreen.setFont(new Font("Monospaced", Font.BOLD, 16));
 		MainScreen.setEditable(false);
+	}
+	
+	private String Translate(String text, String target, String from) throws Exception{
+		//return text;
+		 String encoded_query = URLEncoder.encode (text, "UTF-8");
+	        String params = "?to=" + target + "&text=" + encoded_query + "&from=" + from;
+	        URL url = new URL (host + path + params);
+
+	        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+	        connection.setRequestMethod("GET");
+	        connection.setRequestProperty("Ocp-Apim-Subscription-Key", subscriptionKey);
+	        connection.setDoOutput(true);
+
+	        StringBuilder response = new StringBuilder ();
+	        BufferedReader in = new BufferedReader(
+	        new InputStreamReader(connection.getInputStream()));
+	        String line;
+	        while ((line = in.readLine()) != null) {
+	            response.append(line);
+	        }
+	        in.close();
+	        //return response.toString();
+	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder db = dbf.newDocumentBuilder();
+	        InputSource is = new InputSource();
+	        is.setCharacterStream(new StringReader(response.toString()));
+	        Document doc = db.parse(is);
+	        doc.getDocumentElement().normalize();
+	        return doc.getElementsByTagName("string").item(0).getTextContent();
+	        
 	}
 }
