@@ -11,7 +11,11 @@ import javax.swing.JFrame;
 import java.awt.List;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
@@ -26,18 +30,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 
 public class Translator {
 	
+	// TODO : Error logging
+	// TODO : Could coding of user 1 and user 2
+	// TODO : BUtton for error logging, file writing possibly 
+	// TODO : should also see original source text next to translated text
 	JTextArea textAreaUser1;
 	JTextArea textAreaUser2;
 	JButton btnSend1;
 	JButton btnSend2;
-	JTextArea MainScreen;
 	JComboBox comboBox1;
 	JComboBox comboBox2;
+	JTextPane textPane;
 	private JFrame frame;
-	private JScrollPane scrollPane;
 	private JScrollPane scrollPane_1;
 	private JScrollPane scrollPane_2;
 	
@@ -48,6 +56,7 @@ public class Translator {
     static String path = "/V2/Http.svc/Translate";
 
 	static HashMap<String, String> hm;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Launch the application.
@@ -85,14 +94,14 @@ public class Translator {
 		frame.getContentPane().setLayout(null);
 		
 		comboBox1 = new JComboBox();
-		comboBox1.setFont(new Font("Yu Gothic", Font.PLAIN, 20));
+		comboBox1.setFont(new Font("Yu Gothic UI", Font.PLAIN, 20));
 		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
 		comboBox1.setBounds(277, 419, 152, 54);
 		frame.getContentPane().add(comboBox1);
 		
 		comboBox2 = new JComboBox();
 		comboBox2.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
-		comboBox2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
+		comboBox2.setFont(new Font("Yu Gothic UI", Font.PLAIN, 20));
 		comboBox2.setBounds(788, 417, 152, 54);
 		frame.getContentPane().add(comboBox2);
 		
@@ -116,7 +125,20 @@ public class Translator {
 		
 		textAreaUser2 = new JTextArea();
 		scrollPane_2.setViewportView(textAreaUser2);
+
+        textPane = new JTextPane();
+        textPane.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 18));
+        scrollPane = new JScrollPane();
+		scrollPane.setBounds(156, 49, 887, 324);
+		frame.getContentPane().add(scrollPane);
 		
+		scrollPane.setViewportView(textPane);
+		StyledDocument doc = textPane.getStyledDocument();
+        Style style1 = textPane.addStyle("A", null);
+        StyleConstants.setForeground(style1, Color.red);
+        Style style2 = textPane.addStyle("B", null);
+        StyleConstants.setForeground(style2, Color.blue);
+        
 		btnSend1 = new JButton("Send");
 		
 		btnSend1.addActionListener(new ActionListener() {
@@ -131,14 +153,17 @@ public class Translator {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				String old_screen_text = MainScreen.getText();
+			
 				// TODO : Add original text next to the translated text as well.
-				if(old_screen_text != null){
-					MainScreen.setText(old_screen_text+"\n"+"User 1: "+translated_text);
-				}
-				else{
-					MainScreen.setText("User 1"+translated_text);
-				}
+				
+		
+					try {
+						doc.insertString(doc.getLength(), "\n"+"User 1: "+translated_text,style1);
+					} catch (BadLocationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
 				textAreaUser1.setText("");
 			}
 		});
@@ -149,10 +174,9 @@ public class Translator {
 		btnSend2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String user_text = textAreaUser2.getText();
+				System.out.println(user_text);
 				String source_language = comboBox2.getSelectedItem().toString();
 				String target_language = comboBox1.getSelectedItem().toString();
-				System.out.println("source :"+source_language+" "+hm.get(source_language));
-				System.out.println("target: "+target_language+" "+hm.get(target_language));
 				String translated_text = "Error";
 				try {
 					translated_text = Translate(user_text, hm.get(target_language), hm.get(source_language));
@@ -160,36 +184,52 @@ public class Translator {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				String old_screen_text = MainScreen.getText();
+				
 				// TODO : Add original text next to the translated text as well.
-				if(old_screen_text != null){
-					MainScreen.setText(old_screen_text+"\n"+"User 2: "+translated_text);
+				
 					
-				}
-				else{
-					MainScreen.setText("User 2"+translated_text);
-				}
+					try {
+						doc.insertString(doc.getLength(), "\n"+"User 2: "+translated_text,style2);
+						System.out.println(translated_text);
+					} catch (BadLocationException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				
 				textAreaUser2.setText("");
 				
 			}
 		});
 		btnSend2.setBounds(829, 624, 97, 25);
 		frame.getContentPane().add(btnSend2);
-		//caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(152, 63, 891, 327);
-		frame.getContentPane().add(scrollPane);
 		
-		MainScreen = new JTextArea();
-		scrollPane.setViewportView(MainScreen);
-		MainScreen.setFont(new Font("Monospaced", Font.BOLD, 16));
-		MainScreen.setEditable(false);
+		
+		
+//		StyledDocument doc = textPane.getStyledDocument();
+//		Style style1 = textPane.addStyle("A", null);
+//		Style style2 = textPane.addStyle("B", null);
+		
+		
+//        try {
+//			doc.insertString(doc.getLength(), "RED ",style1);
+//		} catch (BadLocationException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//        try {
+//        	doc.insertString(doc.getLength(), "\n", null);
+//			doc.insertString(doc.getLength(), "BLUE",style2);
+//		} catch (BadLocationException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 	}
 	
 	private String Translate(String text, String target, String from) throws Exception{
 		//return text;
-		 String encoded_query = URLEncoder.encode (text, "UTF-8");
+		 	String encoded_query = URLEncoder.encode (text, "UTF-8");
 	        String params = "?to=" + target + "&text=" + encoded_query + "&from=" + from;
 	        URL url = new URL (host + path + params);
 
@@ -206,7 +246,7 @@ public class Translator {
 	            response.append(line);
 	        }
 	        in.close();
-	        //return response.toString();
+
 	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	        DocumentBuilder db = dbf.newDocumentBuilder();
 	        InputSource is = new InputSource();
