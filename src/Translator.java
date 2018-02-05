@@ -42,7 +42,7 @@ public class Translator {
 	private JScrollPane scrollPane_2;
 	
 	
-	static String subscriptionKey = "c3a369181f4b42a5abda2aaa5294e512";
+	static String subscriptionKey = "b01a7efbbf04482d9517536345339c97";
 
     static String host = "https://api.microsofttranslator.com";
     static String path = "/V2/Http.svc/Translate";
@@ -57,8 +57,8 @@ public class Translator {
 			public void run() {
 				try {
 					hm = new HashMap<String, String>();
-					hm.put("English", "en-us");
-					hm.put("French", "fr-fr");
+					hm.put("English", "en");
+					hm.put("French", "fr");
 					Translator window = new Translator();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
