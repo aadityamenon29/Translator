@@ -138,6 +138,9 @@ public class Translator {
         StyleConstants.setForeground(style1, Color.red);
         Style style2 = textPane.addStyle("B", null);
         StyleConstants.setForeground(style2, Color.blue);
+        Style style3 = textPane.addStyle("C", null);
+        StyleConstants.setForeground(style3, Color.black);
+        StyleConstants.setItalic(style3, true);
         
 		btnSend1 = new JButton("Send");
 		
@@ -159,6 +162,7 @@ public class Translator {
 		
 					try {
 						doc.insertString(doc.getLength(), "\n"+"User 1: "+translated_text,style1);
+						doc.insertString(doc.getLength(), " (o.g text: "+user_text+")", style3);
 					} catch (BadLocationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -174,7 +178,7 @@ public class Translator {
 		btnSend2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String user_text = textAreaUser2.getText();
-				System.out.println(user_text);
+				//System.out.println(user_text);
 				String source_language = comboBox2.getSelectedItem().toString();
 				String target_language = comboBox1.getSelectedItem().toString();
 				String translated_text = "Error";
@@ -190,7 +194,8 @@ public class Translator {
 					
 					try {
 						doc.insertString(doc.getLength(), "\n"+"User 2: "+translated_text,style2);
-						System.out.println(translated_text);
+						doc.insertString(doc.getLength(), " (o.g text: "+user_text+")", style3);
+						//System.out.println(translated_text);
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -204,27 +209,6 @@ public class Translator {
 		btnSend2.setBounds(829, 624, 97, 25);
 		frame.getContentPane().add(btnSend2);
 		
-		
-		
-		
-//		StyledDocument doc = textPane.getStyledDocument();
-//		Style style1 = textPane.addStyle("A", null);
-//		Style style2 = textPane.addStyle("B", null);
-		
-		
-//        try {
-//			doc.insertString(doc.getLength(), "RED ",style1);
-//		} catch (BadLocationException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//        try {
-//        	doc.insertString(doc.getLength(), "\n", null);
-//			doc.insertString(doc.getLength(), "BLUE",style2);
-//		} catch (BadLocationException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
 	}
 	
 	private String Translate(String text, String target, String from) throws Exception{
