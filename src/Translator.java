@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import java.awt.List;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import javax.swing.text.DefaultCaret;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
@@ -16,6 +17,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Color;
+import javax.swing.JScrollPane;
 
 public class Translator {
 	
@@ -27,6 +30,9 @@ public class Translator {
 	JComboBox comboBox1;
 	JComboBox comboBox2;
 	private JFrame frame;
+	private JScrollPane scrollPane;
+	private JScrollPane scrollPane_1;
+	private JScrollPane scrollPane_2;
 
 	/**
 	 * Launch the application.
@@ -76,13 +82,22 @@ public class Translator {
 		verticalStrut.setBounds(548, 419, 108, 247);
 		frame.getContentPane().add(verticalStrut);
 		
+		scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(156, 514, 380, 97);
+		frame.getContentPane().add(scrollPane_1);
+		
 		textAreaUser1 = new JTextArea();
-		textAreaUser1.setBounds(156, 514, 380, 97);
-		frame.getContentPane().add(textAreaUser1);
+		scrollPane_1.setViewportView(textAreaUser1);
+		
+		textAreaUser1.setForeground(Color.BLACK);
+		textAreaUser1.setFont(new Font("Monospaced", Font.PLAIN, 15));
+		
+		scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(663, 514, 380, 97);
+		frame.getContentPane().add(scrollPane_2);
 		
 		textAreaUser2 = new JTextArea();
-		textAreaUser2.setBounds(663, 514, 380, 97);
-		frame.getContentPane().add(textAreaUser2);
+		scrollPane_2.setViewportView(textAreaUser2);
 		
 		btnSend1 = new JButton("Send");
 		
@@ -91,10 +106,10 @@ public class Translator {
 				String user_text = textAreaUser1.getText();
 				String old_screen_text = MainScreen.getText();
 				if(old_screen_text != null){
-					MainScreen.setText(old_screen_text+"\n"+user_text);
+					MainScreen.setText(old_screen_text+"\n"+"User 1: "+user_text);
 				}
 				else{
-					MainScreen.setText(user_text);
+					MainScreen.setText("User 1"+user_text);
 				}
 				textAreaUser1.setText("");
 			}
@@ -105,17 +120,30 @@ public class Translator {
 		btnSend2 = new JButton("Send");
 		btnSend2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("test");
-				//textAreaUser2.setText("hiii");
+				String user_text = textAreaUser2.getText();
+				String old_screen_text = MainScreen.getText();
+				if(old_screen_text != null){
+					MainScreen.setText(old_screen_text+"\n"+"User 2: "+user_text);
+					
+				}
+				else{
+					MainScreen.setText("User 2"+user_text);
+				}
+				textAreaUser2.setText("");
 				
 			}
 		});
 		btnSend2.setBounds(829, 624, 97, 25);
 		frame.getContentPane().add(btnSend2);
+		//caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(152, 63, 891, 327);
+		frame.getContentPane().add(scrollPane);
 		
 		MainScreen = new JTextArea();
+		scrollPane.setViewportView(MainScreen);
+		MainScreen.setFont(new Font("Monospaced", Font.BOLD, 16));
 		MainScreen.setEditable(false);
-		MainScreen.setBounds(152, 63, 891, 327);
-		frame.getContentPane().add(MainScreen);
 	}
 }
