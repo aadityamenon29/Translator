@@ -68,6 +68,19 @@ public class Translator {
 					hm = new HashMap<String, String>();
 					hm.put("English", "en");
 					hm.put("French", "fr");
+					hm.put("Arabic", "ar");
+					hm.put("German", "de");
+					hm.put("Danish", "da");
+					hm.put("Hebrew", "he");
+					hm.put("Italian", "it");
+					hm.put("Japanese", "ja");
+					hm.put("Korean", "ko");
+					hm.put("Portuguese", "pt");
+					hm.put("Spanish", "es");
+					hm.put("Russian", "ru");
+					hm.put("Thai", "th");
+					hm.put("Simplified Chinese", "zh-CHS");
+					
 					Translator window = new Translator();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -95,12 +108,12 @@ public class Translator {
 		
 		comboBox1 = new JComboBox();
 		comboBox1.setFont(new Font("Yu Gothic UI", Font.PLAIN, 20));
-		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
+		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"Arabic", "Danish", "English", "French", "German", "Hebrew", "Italian", "Japanese", "Korean", "Portuguese", "Russian", "Spanish", "Thai", "Simplified Chinese"}));
 		comboBox1.setBounds(277, 419, 152, 54);
 		frame.getContentPane().add(comboBox1);
 		
 		comboBox2 = new JComboBox();
-		comboBox2.setModel(new DefaultComboBoxModel(new String[] {"English", "Spanish", "French", "German", "Italian"}));
+		comboBox2.setModel(new DefaultComboBoxModel(new String[] {"Arabic", "Danish", "English", "French", "German", "Hebrew", "Italian", "Japanese", "Korean", "Portuguese", "Russian", "Spanish", "Thai", "Simplified Chinese"}));
 		comboBox2.setFont(new Font("Yu Gothic UI", Font.PLAIN, 20));
 		comboBox2.setBounds(788, 417, 152, 54);
 		frame.getContentPane().add(comboBox2);
