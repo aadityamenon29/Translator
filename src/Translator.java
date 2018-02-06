@@ -285,33 +285,38 @@ public class Translator {
 	
 	private String Translate(String text, String target, String from) throws Exception{
 		//return text;
-		 	String encoded_query = URLEncoder.encode (text, "UTF-8");
-	        String params = "?to=" + target + "&text=" + encoded_query + "&from=" + from;
-	        URL url = new URL (host + path + params);
+		 	try{
+		 		String encoded_query = URLEncoder.encode (text, "UTF-8");
+		        String params = "?to=" + target + "&text=" + encoded_query + "&from=" + from;
+		        URL url = new URL (host + path + params);
 
-	        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-	        connection.setRequestMethod("GET");
-	        connection.setRequestProperty("Ocp-Apim-Subscription-Key", subscriptionKey);
-	        connection.setDoOutput(true);
+		        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		        connection.setRequestMethod("GET");
+		        connection.setRequestProperty("Ocp-Apim-Subscription-Key", subscriptionKey);
+		        connection.setDoOutput(true);
 
-	        StringBuilder response = new StringBuilder ();
-	        BufferedReader in = new BufferedReader(
-	        new InputStreamReader(connection.getInputStream()));
-	        String line;
-	        while ((line = in.readLine()) != null) {
-	            response.append(line);
-	        }
-	        in.close();
+		        StringBuilder response = new StringBuilder ();
+		        BufferedReader in = new BufferedReader(
+		        new InputStreamReader(connection.getInputStream()));
+		        String line;
+		        while ((line = in.readLine()) != null) {
+		            response.append(line);
+		        }
+		        in.close();
 
-	        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	        DocumentBuilder db = dbf.newDocumentBuilder();
-	        InputSource is = new InputSource();
-	        is.setCharacterStream(new StringReader(response.toString()));
-	        Document doc = db.parse(is);
-	        doc.getDocumentElement().normalize();
-	        String text_return =  doc.getElementsByTagName("string").item(0).getTextContent();
-	        
-	        return text_return;
+		        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		        DocumentBuilder db = dbf.newDocumentBuilder();
+		        InputSource is = new InputSource();
+		        is.setCharacterStream(new StringReader(response.toString()));
+		        Document doc = db.parse(is);
+		        doc.getDocumentElement().normalize();
+		        String text_return =  doc.getElementsByTagName("string").item(0).getTextContent();
+		        
+		        return text_return;
+		 	}
+		 	catch(Exception e){
+		 		writer.write("Something went wrong in translate. "+e.getStackTrace().toString()+". Tried to translate "+text+" from "+from+" to "+target+".");
+		 	}
 	        
 	}
 }
