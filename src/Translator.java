@@ -22,6 +22,8 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
 import java.awt.Component;
+import java.awt.Desktop;
+
 import javax.swing.Box;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
@@ -66,6 +68,7 @@ public class Translator {
 	private JScrollPane scrollPane;
 	private JButton btnReportError1;
 	private JButton btnNewButton;
+	private JButton btnNewButton_1;
 
 	/**
 	 * Launch the application.
@@ -164,6 +167,11 @@ public class Translator {
         Style style3 = textPane.addStyle("C", null);
         StyleConstants.setForeground(style3, Color.black);
         StyleConstants.setItalic(style3, true);
+        Style style4 = textPane.addStyle("D", null);
+        StyleConstants.setForeground(style4, Color.darkGray);
+        StyleConstants.setItalic(style4, true);
+        StyleConstants.setFontSize(style4, 14);
+        
         
 		btnSend1 = new JButton("Send");
 		btnSend1.setForeground(new Color(0, 102, 102));
@@ -242,7 +250,7 @@ public class Translator {
 		frame.getContentPane().add(btnSend2);
 		
 		btnReportError1 = new JButton("Report Error!");
-		btnReportError1.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnReportError1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnReportError1.setForeground(Color.RED);
 		btnReportError1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -252,7 +260,8 @@ public class Translator {
 				try {
 					writer.write("Error reported by user 1. User 1 possibly didn't understand translated text: \'"+last_user_2_translated_text+"\'. "+"Original text sent by User 2 was : \'"+last_user_2_text+"\' at time: "+dateFormat.format(date)+"\n");
 					writer.flush();
-				} catch (IOException e1) {
+					doc.insertString(doc.getLength(), "\n(error reported by User 1. Please try sending a similar phrase.", style4);
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -262,7 +271,7 @@ public class Translator {
 		frame.getContentPane().add(btnReportError1);
 		
 		btnNewButton = new JButton("Report Error!");
-		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnNewButton.setForeground(Color.RED);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -272,7 +281,8 @@ public class Translator {
 				try {
 					writer.write("Error reported by user 2. User 2 possibly didn't understand translated text: \'"+last_user_1_translated_text+"\'. "+"Original text sent by User 1 was : \'"+last_user_1_text+"\' at time: "+dateFormat.format(date)+"\n");
 					writer.flush();
-				} catch (IOException e1) {
+					doc.insertString(doc.getLength(), "\n(error reported by User 2. Please try sending a similar phrase.)", style4);
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -281,7 +291,46 @@ public class Translator {
 		btnNewButton.setBounds(692, 624, 136, 25);
 		frame.getContentPane().add(btnNewButton);
 		
+		btnNewButton_1 = new JButton("Complete Interaction");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				URL url;
+				try {
+					url = new URL("https://ufl.qualtrics.com/jfe/form/SV_9pJmwPn6m4trLAV");
+					try {
+						openWebpage(url.toURI());
+					} catch (URISyntaxException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnNewButton_1.setForeground(new Color(0, 0, 0));
+		btnNewButton_1.setBackground(new Color(255, 255, 255));
+		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 17));
+		btnNewButton_1.setBounds(996, 13, 232, 29);
+		frame.getContentPane().add(btnNewButton_1);
+		
 	}
+	
+	public boolean openWebpage(URI uri) {
+	    Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+	    if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+	        try {
+	            desktop.browse(uri);
+	            return true;
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return false;
+	}
+	
 	
 	private String Translate(String text, String target, String from) throws Exception{
 		//return text;
@@ -316,6 +365,7 @@ public class Translator {
 		 	}
 		 	catch(Exception e){
 		 		writer.write("Something went wrong in translate. "+e.getStackTrace().toString()+". Tried to translate "+text+" from "+from+" to "+target+".");
+		 		return "System error";
 		 	}
 	        
 	}
