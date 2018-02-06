@@ -51,6 +51,7 @@ public class Translator {
 	String last_user_1_translated_text;
 	String last_user_2_text;
 	String last_user_2_translated_text;
+	static Writer writer;
 	private JFrame frame;
 	private JScrollPane scrollPane_1;
 	private JScrollPane scrollPane_2;
@@ -89,7 +90,7 @@ public class Translator {
 					hm.put("Thai", "th");
 					hm.put("Simplified Chinese", "zh-CHS");
 					hm.put("Hindi", "hi");
-					
+					writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Log.txt"), "utf-8"));
 					Translator window = new Translator();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -247,7 +248,14 @@ public class Translator {
 			public void actionPerformed(ActionEvent e) {
 				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 				Date date = new Date();
-				System.out.println("Error reported by user 1. User 1 possibly didn't understand translated text: \'"+last_user_2_translated_text+"\'. "+"Original text sent by User 2 was : \'"+last_user_2_text+"\' at time: "+dateFormat.format(date)+"\n");
+				//System.out.println("Error reported by user 1. User 1 possibly didn't understand translated text: \'"+last_user_2_translated_text+"\'. "+"Original text sent by User 2 was : \'"+last_user_2_text+"\' at time: "+dateFormat.format(date)+"\n");
+				try {
+					writer.write("Error reported by user 1. User 1 possibly didn't understand translated text: \'"+last_user_2_translated_text+"\'. "+"Original text sent by User 2 was : \'"+last_user_2_text+"\' at time: "+dateFormat.format(date)+"\n");
+					writer.flush();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnReportError1.setBounds(192, 624, 136, 25);
@@ -260,7 +268,14 @@ public class Translator {
 			public void actionPerformed(ActionEvent e) {
 				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 				Date date = new Date();
-				System.out.println("Error reported by user 2. User 2 possibly didn't understand translated text: \'"+last_user_1_translated_text+"\'. "+"Original text sent by User 1 was : \'"+last_user_1_text+"\' at time: "+dateFormat.format(date)+"\n");
+				//System.out.println("Error reported by user 2. User 2 possibly didn't understand translated text: \'"+last_user_1_translated_text+"\'. "+"Original text sent by User 1 was : \'"+last_user_1_text+"\' at time: "+dateFormat.format(date)+"\n");
+				try {
+					writer.write("Error reported by user 2. User 2 possibly didn't understand translated text: \'"+last_user_1_translated_text+"\'. "+"Original text sent by User 1 was : \'"+last_user_1_text+"\' at time: "+dateFormat.format(date)+"\n");
+					writer.flush();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnNewButton.setBounds(692, 624, 136, 25);
