@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.*;
@@ -34,7 +36,7 @@ import javax.swing.JTextPane;
 
 public class Translator {
 	
-	// TODO : Error logging
+	// TODO : Error logging and exception handling
 	// TODO : Could coding of user 1 and user 2
 	// TODO : BUtton for error logging, file writing possibly 
 	// TODO : should also see original source text next to translated text
@@ -45,6 +47,10 @@ public class Translator {
 	JComboBox comboBox1;
 	JComboBox comboBox2;
 	JTextPane textPane;
+	String last_user_1_text;
+	String last_user_1_translated_text;
+	String last_user_2_text;
+	String last_user_2_translated_text;
 	private JFrame frame;
 	private JScrollPane scrollPane_1;
 	private JScrollPane scrollPane_2;
@@ -57,6 +63,8 @@ public class Translator {
 
 	static HashMap<String, String> hm;
 	private JScrollPane scrollPane;
+	private JButton btnReportError1;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -80,6 +88,7 @@ public class Translator {
 					hm.put("Russian", "ru");
 					hm.put("Thai", "th");
 					hm.put("Simplified Chinese", "zh-CHS");
+					hm.put("Hindi", "hi");
 					
 					Translator window = new Translator();
 					window.frame.setVisible(true);
@@ -108,12 +117,12 @@ public class Translator {
 		
 		comboBox1 = new JComboBox();
 		comboBox1.setFont(new Font("Yu Gothic UI", Font.PLAIN, 20));
-		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"Arabic", "Danish", "English", "French", "German", "Hebrew", "Italian", "Japanese", "Korean", "Portuguese", "Russian", "Spanish", "Thai", "Simplified Chinese"}));
+		comboBox1.setModel(new DefaultComboBoxModel(new String[] {"Arabic", "Danish", "English", "French", "German", "Hebrew", "Hindi", "Italian", "Japanese", "Korean", "Portuguese", "Russian", "Spanish", "Thai", "Simplified Chinese"}));
 		comboBox1.setBounds(277, 419, 152, 54);
 		frame.getContentPane().add(comboBox1);
 		
 		comboBox2 = new JComboBox();
-		comboBox2.setModel(new DefaultComboBoxModel(new String[] {"Arabic", "Danish", "English", "French", "German", "Hebrew", "Italian", "Japanese", "Korean", "Portuguese", "Russian", "Spanish", "Thai", "Simplified Chinese"}));
+		comboBox2.setModel(new DefaultComboBoxModel(new String[] {"Arabic", "Danish", "English", "French", "German", "Hebrew", "Hindi", "Italian", "Japanese", "Korean", "Portuguese", "Russian", "Spanish", "Thai", "Simplified Chinese"}));
 		comboBox2.setFont(new Font("Yu Gothic UI", Font.PLAIN, 20));
 		comboBox2.setBounds(788, 417, 152, 54);
 		frame.getContentPane().add(comboBox2);
@@ -156,6 +165,8 @@ public class Translator {
         StyleConstants.setItalic(style3, true);
         
 		btnSend1 = new JButton("Send");
+		btnSend1.setForeground(new Color(0, 102, 102));
+		btnSend1.setFont(new Font("Tahoma", Font.BOLD, 15));
 		
 		btnSend1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -165,6 +176,8 @@ public class Translator {
 				String translated_text = "Error";
 				try {
 					translated_text = Translate(user_text, hm.get(target_language), hm.get(source_language));
+					last_user_1_text = user_text;
+					last_user_1_translated_text = translated_text;
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -176,6 +189,7 @@ public class Translator {
 					try {
 						doc.insertString(doc.getLength(), "\n"+"User 1: "+translated_text,style1);
 						doc.insertString(doc.getLength(), " (o.g text: "+user_text+")", style3);
+						
 					} catch (BadLocationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -184,10 +198,12 @@ public class Translator {
 				textAreaUser1.setText("");
 			}
 		});
-		btnSend1.setBounds(304, 624, 97, 25);
+		btnSend1.setBounds(395, 624, 97, 25);
 		frame.getContentPane().add(btnSend1);
 		
 		btnSend2 = new JButton("Send");
+		btnSend2.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnSend2.setForeground(new Color(0, 102, 102));
 		btnSend2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String user_text = textAreaUser2.getText();
@@ -197,6 +213,8 @@ public class Translator {
 				String translated_text = "Error";
 				try {
 					translated_text = Translate(user_text, hm.get(target_language), hm.get(source_language));
+					last_user_2_text = user_text;
+					last_user_2_translated_text = translated_text;
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -219,8 +237,34 @@ public class Translator {
 				
 			}
 		});
-		btnSend2.setBounds(829, 624, 97, 25);
+		btnSend2.setBounds(906, 624, 97, 25);
 		frame.getContentPane().add(btnSend2);
+		
+		btnReportError1 = new JButton("Report Error!");
+		btnReportError1.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnReportError1.setForeground(Color.RED);
+		btnReportError1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				Date date = new Date();
+				System.out.println("Error reported by user 1. User 1 possibly didn't understand translated text: \'"+last_user_2_translated_text+"\'. "+"Original text sent by User 2 was : \'"+last_user_2_text+"\' at time: "+dateFormat.format(date)+"\n");
+			}
+		});
+		btnReportError1.setBounds(192, 624, 136, 25);
+		frame.getContentPane().add(btnReportError1);
+		
+		btnNewButton = new JButton("Report Error!");
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNewButton.setForeground(Color.RED);
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				Date date = new Date();
+				System.out.println("Error reported by user 2. User 2 possibly didn't understand translated text: \'"+last_user_1_translated_text+"\'. "+"Original text sent by User 1 was : \'"+last_user_1_text+"\' at time: "+dateFormat.format(date)+"\n");
+			}
+		});
+		btnNewButton.setBounds(692, 624, 136, 25);
+		frame.getContentPane().add(btnNewButton);
 		
 	}
 	
@@ -250,7 +294,9 @@ public class Translator {
 	        is.setCharacterStream(new StringReader(response.toString()));
 	        Document doc = db.parse(is);
 	        doc.getDocumentElement().normalize();
-	        return doc.getElementsByTagName("string").item(0).getTextContent();
+	        String text_return =  doc.getElementsByTagName("string").item(0).getTextContent();
+	        
+	        return text_return;
 	        
 	}
 }
